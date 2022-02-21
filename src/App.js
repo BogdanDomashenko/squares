@@ -1,7 +1,7 @@
 import React from "react";
 import store from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setStatus } from "./redux/slices/squaresSlice";
+import { setStatus, buy } from "./redux/slices/squaresSlice";
 
 import { Square } from "./components";
 import { Container, Grid, Button } from "@mui/material";
@@ -10,6 +10,14 @@ function App() {
   const dispatch = useDispatch();
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    squares.map(
+      (item) =>
+        item.status === "yellow" &&
+        dispatch(setStatus({ id: item.id, status: "green" }))
+    );
+  }, []);
 
   React.useEffect(() => {
     if (squares.find((item) => item.status === "yellow")) {
@@ -31,6 +39,10 @@ function App() {
     dispatch(setStatus({ id, status: "green" }));
   };
 
+  const buyButtonClick = () => {
+    dispatch(buy({}));
+  };
+
   return (
     <div className="App">
       <Container>
@@ -46,7 +58,11 @@ function App() {
               </Grid>
             ))}
         </Grid>
-        {buttonVisible && <Button variant="contained">Купить</Button>}
+        {buttonVisible && (
+          <Button variant="contained" onClick={buyButtonClick}>
+            Купить
+          </Button>
+        )}
       </Container>
     </div>
   );

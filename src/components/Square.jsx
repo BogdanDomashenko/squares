@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Switch } from "@mui/material";
 import { useTimer } from "use-timer";
 
 function Square({ color, onClick, onTimerEnd }) {
@@ -12,6 +12,20 @@ function Square({ color, onClick, onTimerEnd }) {
       reset();
     },
   });
+
+  //   React.useEffect(() => {
+  //     switch (color) {
+  //       case "yellow":
+  //         start();
+  //         break;
+  //       case "green":
+  //       case "red":
+  //         reset();
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }, []);
 
   return (
     <div>
