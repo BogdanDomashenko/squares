@@ -21,6 +21,13 @@ export const squaresSlice = createSlice({
           : item
       );
     },
+    setYellowSquaresStatus: (state, action) => {
+      return state.map((item) =>
+        item.status === "yellow"
+          ? { ...item, status: action.payload.status }
+          : item
+      );
+    },
     buy: (state) => {
       return state.map((item) =>
         item.status === "yellow" ? { ...item, status: "red" } : item
@@ -29,6 +36,6 @@ export const squaresSlice = createSlice({
   },
 });
 
-export const { setStatus, buy } = squaresSlice.actions;
+export const { setStatus, setYellowSquaresStatus, buy } = squaresSlice.actions;
 
 export default squaresSlice.reducer;

@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Switch } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTimer } from "use-timer";
 
 function Square({ color, onClick, onTimerEnd }) {
   const { time, start, pause, reset, status } = useTimer({
-    initialTime: 5,
+    initialTime: 120,
     endTime: 0,
     timerType: "DECREMENTAL",
     onTimeOver: () => {
@@ -13,27 +13,24 @@ function Square({ color, onClick, onTimerEnd }) {
     },
   });
 
-  //   React.useEffect(() => {
-  //     switch (color) {
-  //       case "yellow":
-  //         start();
-  //         break;
-  //       case "green":
-  //       case "red":
-  //         reset();
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }, []);
+  React.useEffect(() => {
+    switch (color) {
+      case "yellow":
+        start();
+        break;
+      case "green":
+      case "red":
+        reset();
+        break;
+      default:
+        break;
+    }
+  }, [color]);
 
   return (
     <div>
       <Box
-        onClick={() => {
-          onClick();
-          start();
-        }}
+        onClick={onClick}
         sx={{
           width: 200,
           maxWidth: "100%",
@@ -47,7 +44,7 @@ function Square({ color, onClick, onTimerEnd }) {
           },
         }}
       >
-        {status === "RUNNING" ? time : ""}
+        {status === "RUNNING" ? Math.floor(time / 60) + ":" + (time % 60) : ""}
       </Box>
     </div>
   );

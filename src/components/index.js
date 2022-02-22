@@ -1,1 +1,2 @@
-export { default as Square } from "./Square";
+export { default as Squares } from "./Squares";
+export { default as Navbar } from "./Navbar";
