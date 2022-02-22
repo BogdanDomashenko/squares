@@ -1,11 +1,13 @@
 import React from "react";
 import { Container } from "@mui/material";
+import { Navbar } from "../components";
 
 function Home() {
   return (
-    <div>
+    <>
+      <Navbar />
       <Container>Home</Container>
-    </div>
+    </>
   );
 }
 

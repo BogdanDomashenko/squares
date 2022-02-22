@@ -6,15 +6,22 @@ import { Navbar, ProtectedRoute } from "./components";
 function App() {
   return (
     <div className="App">
-      <Navbar />
       <Routes>
-        <Route exact path="/" element={<ProtectedRoute element={<Home />} />} />
+        <Route
+          exact
+          path="/"
+          element={<ProtectedRoute element={<Home />} isLogined={true} />}
+        />
         <Route
           exact
           path="/booking"
-          element={<ProtectedRoute element={<Booking />} />}
+          element={<ProtectedRoute element={<Booking />} isLogined={true} />}
         />
-        <Route exact path="/login" element={<Login />} />
+        <Route
+          exact
+          path="/login"
+          element={<ProtectedRoute element={<Login />} isLogined={false} />}
+        />
       </Routes>
     </div>
   );

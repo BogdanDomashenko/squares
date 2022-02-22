@@ -1,9 +1,10 @@
 import React from "react";
-import { Squares } from "../components";
+import { Navbar, Squares } from "../components";
 
 function Booking() {
   return (
     <>
+      <Navbar />
       <Squares />
     </>
   );

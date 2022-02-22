@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Box, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import validator from "validator";
 import md5 from "md5";
 
 function Login() {
@@ -16,8 +17,12 @@ function Login() {
 
   const loginButtonClick = () => {
     if (userEmail.length && userPassword.length) {
-      localStorage.setItem("userToken", md5(userEmail));
-      navigate("/", { replace: true });
+      if (validator.isEmail(userEmail)) {
+        localStorage.setItem("userToken", md5(userEmail));
+        navigate("/", { replace: true });
+      } else {
+        setLoginError("Некорректная почта");
+      }
     } else {
       setLoginError("Все поля должны быть заполнены");
     }
