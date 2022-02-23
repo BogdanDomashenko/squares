@@ -2,14 +2,17 @@ import React from "react";
 import { Box } from "@mui/material";
 import { useTimer } from "use-timer";
 
-function Square({ color, onClick, onTimerEnd }) {
+function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
   const { time, start, pause, reset, status } = useTimer({
-    initialTime: 120,
+    initialTime: startTime || 120,
     endTime: 0,
     timerType: "DECREMENTAL",
     onTimeOver: () => {
       onTimerEnd();
       reset();
+    },
+    onTimeUpdate: (time) => {
+      onTimeUpdate(time);
     },
   });
 

@@ -5,6 +5,7 @@ import {
   setStatus,
   setYellowSquaresStatus,
   buy,
+  setSquareTimer,
 } from "../../redux/slices/squaresSlice";
 
 import Square from "./Square";
@@ -15,14 +16,6 @@ function Squares() {
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [buyError, setBuyError] = React.useState(null);
-
-  React.useEffect(() => {
-    squares.map(
-      (item) =>
-        item.status === "yellow" &&
-        dispatch(setStatus({ id: item.id, status: "green" }))
-    );
-  }, []);
 
   React.useEffect(() => {
     if (squares.find((item) => item.status === "yellow")) {
@@ -43,6 +36,10 @@ function Squares() {
 
   const onSquareTimerEnd = (id) => {
     dispatch(setStatus({ id, status: "green" }));
+  };
+
+  const onSquareTimeUpdate = (id, time) => {
+    dispatch(setSquareTimer({ id, time }));
   };
 
   const buyButtonClick = () => {
@@ -77,6 +74,8 @@ function Squares() {
                   color={item.status}
                   onClick={() => onSquareClick(item.id, item.status)}
                   onTimerEnd={() => onSquareTimerEnd(item.id)}
+                  onTimeUpdate={(time) => onSquareTimeUpdate(item.id, time)}
+                  startTime={item.timer}
                 />
               </Grid>
             ))}

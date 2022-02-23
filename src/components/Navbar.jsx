@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   //   const [navItems, setNavItems] = React.useState([
@@ -12,8 +14,17 @@ function Navbar() {
   //     setNavItems(...navItems, navItems.map(item => item.id === id : isActive))
   //   }
 
+  const navigate = useNavigate();
+
   const onClickLogout = () => {
     localStorage.removeItem("userToken");
+    axios
+      .get("http://localhost:3001/logout")
+      .then((data) => {
+        localStorage.removeItem("userToken");
+        navigate("/login", { replace: true });
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -34,15 +45,13 @@ function Navbar() {
             </Link>
           </div>
           <div>
-            <Link to="/login">
-              <Button
-                onClick={onClickLogout}
-                color="secondary"
-                variant="outlined"
-              >
-                Logout
-              </Button>
-            </Link>
+            <Button
+              onClick={onClickLogout}
+              color="secondary"
+              variant="outlined"
+            >
+              Logout
+            </Button>
           </div>
         </Box>
       </Container>

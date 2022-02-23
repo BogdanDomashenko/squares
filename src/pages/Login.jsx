@@ -12,52 +12,60 @@ function Login() {
   const [userPassword, setUserPassword] = React.useState("");
   const [loginError, setLoginError] = React.useState(null);
 
+  const [emailError, setEmailError] = React.useState(null);
+  const [passwordError, setPasswordError] = React.useState(null);
+
   React.useEffect(() => {
     loginError && setLoginError(null);
+    emailError && setEmailError(false);
+    passwordError && setPasswordError(false);
   }, [userEmail, userPassword]);
 
   const loginButtonClick = () => {
-    // if (userEmail.length && userPassword.length) {
-    //   if (validator.isEmail(userEmail)) {
-    //     axios
-    //       .post("http://localhost:3001/login", {
-    //         email: userEmail,
-    //       })
-    //       .then(({ data }) => {
-    //         console.log(data);
-    //       })
-    //       .catch((error) => {
-    //         console.error(error);
-    //       });
+    if (userEmail && userPassword) {
+      if (validator.isEmail(userEmail)) {
+        axios
+          .post("http://localhost:3001/login", {
+            email: userEmail,
+            password: userPassword,
+          })
+          .then(({ data }) => {
+            localStorage.setItem("userToken", data.token);
+            navigate("/", { replace: true });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        setEmailError(true);
+        setLoginError("Некорректная почта");
+      }
+    } else {
+      !userEmail && setEmailError(true);
+      !userPassword && setPasswordError(true);
+      setLoginError("Все поля должны быть заполнены");
+    }
 
-    //     // localStorage.setItem("userToken", md5(userEmail));
-    //     // navigate("/", { replace: true });
-    //   } else {
-    //     setLoginError("Некорректная почта");
-    //   }
-    // } else {
-    //   setLoginError("Все поля должны быть заполнены");
-    // }
-
-    axios
-      .post("http://localhost:3001/login", {
-        email: userEmail,
-        password: userPassword,
-      })
-      .then(({ data }) => {
-        console.log(data);
-      })
-      .catch(({ response }) => {
-        switch (response.status) {
-          case 406:
-            setLoginError("Некорректная почта");
-            break;
-          case 411:
-            setLoginError("Все поля должны быть заполнены");
-          default:
-            break;
-        }
-      });
+    // axios
+    //   .post("http://localhost:3001/login", {
+    //     email: userEmail,
+    //     password: userPassword,
+    //   })
+    //   .then(({ data }) => {
+    //     localStorage.setItem("userToken", data.token);
+    //     navigate("/", { replace: true });
+    //   })
+    //   .catch(({ response }) => {
+    //     switch (response.status) {
+    //       case 406:
+    //         setLoginError("Некорректная почта");
+    //         break;
+    //       case 411:
+    //         setLoginError("Все поля должны быть заполнены");
+    //       default:
+    //         break;
+    //     }
+    //   });
   };
 
   const emailChangeHandler = (e) => {
@@ -68,19 +76,14 @@ function Login() {
     setUserPassword(e.target.value);
   };
 
-  const testButtonClick = () => {
-    axios
-      .get("http://localhost:3001/token")
-      .then(({ data }) => console.log(data))
-      .catch((error) => console.error(error));
-  };
-
   return (
     <div>
       <Container>
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <h3>Sign in</h3>
           <TextField
+            error={emailError}
+            helperText={emailError ? "Обязательное поле" : ""}
             id="userEmail"
             label="Email"
             variant="outlined"
@@ -89,6 +92,8 @@ function Login() {
             onChange={emailChangeHandler}
           />
           <TextField
+            error={passwordError}
+            helperText={passwordError ? "Обязательное поле" : ""}
             id="password"
             label="Password"
             variant="outlined"
@@ -104,14 +109,6 @@ function Login() {
           sx={{ marginTop: "10px" }}
         >
           Login
-        </Button>
-        <br />
-        <Button
-          onClick={testButtonClick}
-          variant="outlined"
-          sx={{ marginTop: "10px" }}
-        >
-          test
         </Button>
         <br />
         {loginError && loginError}
