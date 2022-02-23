@@ -3,6 +3,7 @@ import { Container, Box, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
 import md5 from "md5";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,16 +17,47 @@ function Login() {
   }, [userEmail, userPassword]);
 
   const loginButtonClick = () => {
-    if (userEmail.length && userPassword.length) {
-      if (validator.isEmail(userEmail)) {
-        localStorage.setItem("userToken", md5(userEmail));
-        navigate("/", { replace: true });
-      } else {
-        setLoginError("Некорректная почта");
-      }
-    } else {
-      setLoginError("Все поля должны быть заполнены");
-    }
+    // if (userEmail.length && userPassword.length) {
+    //   if (validator.isEmail(userEmail)) {
+    //     axios
+    //       .post("http://localhost:3001/login", {
+    //         email: userEmail,
+    //       })
+    //       .then(({ data }) => {
+    //         console.log(data);
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //       });
+
+    //     // localStorage.setItem("userToken", md5(userEmail));
+    //     // navigate("/", { replace: true });
+    //   } else {
+    //     setLoginError("Некорректная почта");
+    //   }
+    // } else {
+    //   setLoginError("Все поля должны быть заполнены");
+    // }
+
+    axios
+      .post("http://localhost:3001/login", {
+        email: userEmail,
+        password: userPassword,
+      })
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch(({ response }) => {
+        switch (response.status) {
+          case 406:
+            setLoginError("Некорректная почта");
+            break;
+          case 411:
+            setLoginError("Все поля должны быть заполнены");
+          default:
+            break;
+        }
+      });
   };
 
   const emailChangeHandler = (e) => {
@@ -34,6 +66,13 @@ function Login() {
 
   const passwordChangeHandler = (e) => {
     setUserPassword(e.target.value);
+  };
+
+  const testButtonClick = () => {
+    axios
+      .get("http://localhost:3001/token")
+      .then(({ data }) => console.log(data))
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -65,6 +104,14 @@ function Login() {
           sx={{ marginTop: "10px" }}
         >
           Login
+        </Button>
+        <br />
+        <Button
+          onClick={testButtonClick}
+          variant="outlined"
+          sx={{ marginTop: "10px" }}
+        >
+          test
         </Button>
         <br />
         {loginError && loginError}
