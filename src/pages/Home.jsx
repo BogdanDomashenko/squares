@@ -3,17 +3,30 @@ import { Container, Button } from "@mui/material";
 import { Navbar } from "../components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import config from "../config";
 
 function Home() {
   const navigate = useNavigate();
 
   const testButtonClick = () => {
+    const token = localStorage.getItem("userToken");
+
     axios
-      .get("http://localhost:3001/token")
-      .then(({ data }) => console.log(data))
+      .post(config.api + "/token", { token })
+      .then(({ data }) => {
+        localStorage.setItem("userToken", data.token);
+        console.log(data);
+      })
       .catch((error) => {
-        localStorage.removeItem("userToken");
-        navigate("/login", { replace: true });
+        switch (error.toJSON().status) {
+          case 401:
+            localStorage.removeItem("userToken");
+            navigate("/login", { replace: true });
+            break;
+          default:
+            console.error(error);
+            break;
+        }
       });
   };
 
