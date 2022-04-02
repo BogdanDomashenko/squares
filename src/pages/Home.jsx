@@ -13,9 +13,8 @@ function Home() {
 
     axios
       .post(config.api + "/token", { token })
-      .then(({ data }) => {
-        localStorage.setItem("userToken", data.token);
-        console.log(data);
+      .then(({ data, headers }) => {
+        localStorage.setItem("userToken", headers.authorization);
       })
       .catch((error) => {
         switch (error.toJSON().status) {

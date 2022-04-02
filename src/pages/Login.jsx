@@ -48,8 +48,8 @@ function Login() {
   const onSubmit = (data) => {
     axios
       .post(config.api + "/login", { ...data })
-      .then(({ data }) => {
-        localStorage.setItem("userToken", data.token);
+      .then(({ data, headers }) => {
+        localStorage.setItem("userToken", headers.authorization);
         navigate("/", { replace: true });
       })
       .catch((error) => console.error(error));
