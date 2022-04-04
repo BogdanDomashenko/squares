@@ -10,17 +10,17 @@ function App() {
         <Route
           exact
           path="/"
-          element={<ProtectedRoute element={<Home />} isLogined={true} />}
+          element={<ProtectedRoute element={<Home />} mustLogined={true} />}
         />
         <Route
           exact
           path="/booking"
-          element={<ProtectedRoute element={<Booking />} isLogined={true} />}
+          element={<ProtectedRoute element={<Booking />} mustLogined={true} />}
         />
         <Route
           exact
           path="/login"
-          element={<ProtectedRoute element={<Login />} isLogined={false} />}
+          element={<ProtectedRoute element={<Login />} mustLogined={false} />}
         />
       </Routes>
     </div>

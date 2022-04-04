@@ -50,7 +50,7 @@ function Login() {
         localStorage.setItem("userToken", headers.authorization);
         navigate("/", { replace: true });
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.log(error.data));
   };
 
   return (
