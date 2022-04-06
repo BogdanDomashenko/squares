@@ -8,26 +8,26 @@ import config from "../config";
 function Home() {
   const navigate = useNavigate();
 
-  const testButtonClick = () => {
-    const token = localStorage.getItem("userToken");
+  // const testButtonClick = () => {
+  //   const token = localStorage.getItem("userToken");
 
-    axios
-      .post(config.api + "/token", { token })
-      .then(({ data, headers }) => {
-        localStorage.setItem("userToken", headers.authorization);
-      })
-      .catch((error) => {
-        switch (error.toJSON().status) {
-          case 401:
-            localStorage.removeItem("userToken");
-            navigate("/login", { replace: true });
-            break;
-          default:
-            console.error(error);
-            break;
-        }
-      });
-  };
+  //   axios
+  //     .post(config.api + "/token", { token })
+  //     .then(({ data, headers }) => {
+  //       localStorage.setItem("userToken", headers.authorization);
+  //     })
+  //     .catch((error) => {
+  //       switch (error.toJSON().status) {
+  //         case 401:
+  //           localStorage.removeItem("userToken");
+  //           navigate("/login", { replace: true });
+  //           break;
+  //         default:
+  //           console.error(error);
+  //           break;
+  //       }
+  //     });
+  // };
 
   return (
     <>
@@ -35,13 +35,13 @@ function Home() {
       <Container>
         Home
         <br />
-        <Button
+        {/* <Button
           onClick={testButtonClick}
           variant="outlined"
           sx={{ marginTop: "10px" }}
         >
           test
-        </Button>
+        </Button> */}
       </Container>
     </>
   );

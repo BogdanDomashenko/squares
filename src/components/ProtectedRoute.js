@@ -8,29 +8,6 @@ function ProtectedRoute({ element, mustLogined }) {
 
   const [isLogined, setIsLogined] = useState(false);
 
-  // useEffect(() => {
-  //   isLogined &&
-  //     axios
-  //       .post(config.api + "/token", {
-  //         token: storageToken,
-  //       })
-  //       .then(({ data, headers }) => {
-  //         localStorage.setItem("userToken", headers.authorization);
-  //         setUserToken(headers.authorization);
-  //       })
-  //       .catch((error) => {
-  //         switch (error.toJSON().status) {
-  //           case 401:
-  //             localStorage.removeItem("userToken");
-  //             setUserToken(null);
-  //             break;
-  //           default:
-  //             console.error(error);
-  //             break;
-  //         }
-  //       });
-  // });
-
   useEffect(() => {
     if (mustLogined) {
       if (storageToken) {
