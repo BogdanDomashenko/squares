@@ -32,35 +32,42 @@ function ProtectedRoute({ element, mustLogined }) {
   // });
 
   useEffect(() => {
-    mustLogined &&
-      axios
-        .post(config.api + "/token", {
-          token: storageToken || " ",
-        })
-        .then(({ data, headers }) => {
-          setIsLogined(true);
-        })
-        .catch((error) => {
-          switch (error.toJSON().status) {
-            case 401:
-              axios
-                .get(config.api + "/refresh")
-                .then(({ data, headers }) => {
-                  localStorage.setItem("userToken", headers.authorization);
-                  setIsLogined(true);
-                })
-                .catch((error) => {
-                  if (error.toJSON().status === 401) {
-                    localStorage.removeItem("userToken");
-                    setIsLogined(false);
-                  }
-                });
-              break;
-            default:
-              console.error(error);
-              break;
-          }
-        });
+    if (mustLogined) {
+      if (storageToken) {
+        axios
+          .post(
+            config.api + "/token",
+            {},
+            { headers: { Authorization: storageToken } }
+          )
+          .then(({ data, headers }) => {
+            setIsLogined(true);
+          })
+          .catch((error) => {
+            switch (error.toJSON().status) {
+              case 401:
+                axios
+                  .get(config.api + "/refresh")
+                  .then(({ data, headers }) => {
+                    localStorage.setItem("userToken", headers.authorization);
+                    setIsLogined(true);
+                  })
+                  .catch((error) => {
+                    if (error.toJSON().status === 401) {
+                      localStorage.removeItem("userToken");
+                      setIsLogined(false);
+                    }
+                  });
+                break;
+              default:
+                console.error(error);
+                break;
+            }
+          });
+      } else {
+        setIsLogined(false);
+      }
+    }
   });
 
   if (mustLogined) {
