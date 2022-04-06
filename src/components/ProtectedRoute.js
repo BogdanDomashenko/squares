@@ -13,7 +13,7 @@ function ProtectedRoute({ element, mustLogined }) {
       if (storageToken) {
         axios
           .post(
-            config.api + "/token",
+            config.api + "/token/access",
             {},
             { headers: { Authorization: storageToken } }
           )
@@ -24,7 +24,7 @@ function ProtectedRoute({ element, mustLogined }) {
             switch (error.toJSON().status) {
               case 401:
                 axios
-                  .get(config.api + "/refresh")
+                  .get(config.api + "/token/refresh")
                   .then(({ data, headers }) => {
                     localStorage.setItem("userToken", headers.authorization);
                     setIsLogined(true);

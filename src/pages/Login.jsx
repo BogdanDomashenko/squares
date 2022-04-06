@@ -45,7 +45,7 @@ function Login() {
 
   const onSubmit = (data) => {
     axios
-      .post(config.api + "/login", { ...data })
+      .post(config.api + "/auth/login", { ...data })
       .then(({ data, headers }) => {
         localStorage.setItem("userToken", headers.authorization);
         navigate("/", { replace: true });
