@@ -38,8 +38,6 @@ function ProtectedRoute({ element, mustLogined }) {
                 break;
             }
           });
-      } else {
-        dispatch(setAccessToken({ token: null }));
       }
     }
   });
