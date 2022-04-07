@@ -1,38 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import config from "../config";
+import { setAccessToken } from "../redux/slices/userSlice";
 
 function ProtectedRoute({ element, mustLogined }) {
-  const storageToken = localStorage.getItem("userToken");
-
-  const [isLogined, setIsLogined] = useState(false);
+  const dispatch = useDispatch();
+  const accessToken = useSelector(({ user }) => user.accessToken);
 
   useEffect(() => {
     if (mustLogined) {
-      if (storageToken) {
+      if (accessToken) {
         axios
           .post(
             config.api + "/token/access",
             {},
-            { headers: { Authorization: storageToken } }
+            { headers: { Authorization: accessToken } }
           )
-          .then(({ data, headers }) => {
-            setIsLogined(true);
-          })
+          .then(({ data, headers }) => {})
           .catch((error) => {
             switch (error.toJSON().status) {
               case 401:
                 axios
                   .get(config.api + "/token/refresh")
                   .then(({ data, headers }) => {
-                    localStorage.setItem("userToken", headers.authorization);
-                    setIsLogined(true);
+                    dispatch(setAccessToken({ token: headers.authorization }));
                   })
                   .catch((error) => {
                     if (error.toJSON().status === 401) {
-                      localStorage.removeItem("userToken");
-                      setIsLogined(false);
+                      dispatch(setAccessToken({ token: null }));
                     }
                   });
                 break;
@@ -42,15 +39,15 @@ function ProtectedRoute({ element, mustLogined }) {
             }
           });
       } else {
-        setIsLogined(false);
+        dispatch(setAccessToken({ token: null }));
       }
     }
   });
 
   if (mustLogined) {
-    return isLogined ? element : <Navigate to="/login" replace />;
+    return accessToken ? element : <Navigate to="/login" replace />;
   } else {
-    return !isLogined ? element : <Navigate to="/" replace />;
+    return !accessToken ? element : <Navigate to="/" replace />;
   }
 }
 

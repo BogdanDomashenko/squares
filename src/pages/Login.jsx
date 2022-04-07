@@ -2,6 +2,8 @@ import React from "react";
 import { Container, Box, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setAccessToken } from "../redux/slices/userSlice";
 import { Form, Field } from "react-final-form";
 import { setIn } from "final-form";
 import * as yup from "yup";
@@ -42,12 +44,13 @@ const FieldStyle = { marginBottom: "10px" };
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmit = (data) => {
     axios
       .post(config.api + "/auth/login", { ...data })
       .then(({ data, headers }) => {
-        localStorage.setItem("userToken", headers.authorization);
+        dispatch(setAccessToken({ token: headers.authorization }));
         navigate("/", { replace: true });
       })
       .catch((error) => console.log(error.data));
