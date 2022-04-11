@@ -1,38 +1,15 @@
-import React from "react";
-import { Container, Box, TextField, Button } from "@mui/material";
+import React, { useState } from "react";
+import { Container, Box, TextField, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setAccessToken } from "../redux/slices/userSlice";
+import { login, setAccessToken } from "../redux/slices/userSlice";
 import { Form, Field } from "react-final-form";
-import { setIn } from "final-form";
-import * as yup from "yup";
 import config from "../config";
-
-const validate = (schema) => async (values) => {
-  if (typeof schema === "function") schema = schema();
-
-  try {
-    await schema.validate(values, { abortEarly: false });
-  } catch (e) {
-    return e.inner.reduce((errors, error) => {
-      return setIn(errors, error.path, error.message);
-    }, {});
-  }
-};
-
-let schema = yup.object().shape({
-  email: yup.string().required().email(),
-  password: yup
-    .string()
-    .required()
-    .min(6)
-    .matches(
-      /^[a-zA-Z0-9]+$/ &&
-        /(?:[^`!@#$%^&*\-_=+'\/.,;:]*[`!@#$%^&*\-_=+'\/.,;:]){2}/,
-      "Only alphabet, numbers, and 2 special symbols"
-    ),
-});
+import validate from "../validation/validate";
+import loginSchema from "../validation/schemas/login";
+import localStorageService from "../services/localStorageService";
+import authService from "../services/authService";
 
 const FormStyle = {
   display: "flex",
@@ -46,14 +23,29 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onSubmit = (data) => {
-    axios
-      .post(config.api + "/auth/login", { ...data })
-      .then(({ data, headers }) => {
-        dispatch(setAccessToken({ token: headers.authorization }));
-        navigate("/", { replace: true });
-      })
-      .catch((error) => console.log(error.data));
+  const onSubmit = async (values) => {
+    dispatch(login(values));
+    /*     try {
+      const data = await authService.login(values.email, values.password);
+
+      //dispatch(setAccessToken({ token: headers.authorization }));
+      navigate("/", { replace: true });
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.data.message) {
+          case "User with this email does not exist":
+            return { email: error.response.data.message };
+            break;
+          case "Incorrect password":
+            return { password: error.response.data.message };
+          default:
+            console.log(error);
+            break;
+        }
+      } else {
+        console.log(error);
+      }
+    } */
   };
 
   return (
@@ -61,7 +53,7 @@ function Login() {
       <Container>
         <Form
           onSubmit={onSubmit}
-          validate={validate(schema)}
+          validate={validate(loginSchema)}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
             <form onSubmit={handleSubmit}>
               <Box sx={FormStyle}>
@@ -69,9 +61,11 @@ function Login() {
                   <Field name="email">
                     {({ input, meta }) => (
                       <TextField
-                        error={meta.error && meta.touched}
+                        error={(meta.error || meta.submitError) && meta.touched}
                         helperText={
-                          meta.error && meta.touched ? meta.error : ""
+                          meta.error || (meta.submitError && meta.touched)
+                            ? meta.error || meta.submitError
+                            : ""
                         }
                         id="userEmail"
                         label="Email"
@@ -87,9 +81,11 @@ function Login() {
                   <Field name="password">
                     {({ input, meta }) => (
                       <TextField
-                        error={meta.error && meta.touched}
+                        error={(meta.error || meta.submitError) && meta.touched}
                         helperText={
-                          meta.error && meta.touched ? meta.error : ""
+                          meta.error || (meta.submitError && meta.touched)
+                            ? meta.error || meta.submitError
+                            : ""
                         }
                         id="userPassword"
                         label="Password"

@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import config from "../config";
 import { setAccessToken } from "../redux/slices/userSlice";
+import localStorageService from "../services/localStorageService";
 
 function ProtectedRoute({ element, mustLogined }) {
   const dispatch = useDispatch();
-  const accessToken = useSelector(({ user }) => user.accessToken);
+  const navigate = useNavigate();
+
+  const accessToken = localStorageService.getAccessToken();
+  const isLoggedIn = useSelector(({ user }) => user.isLoggedIn);
+  console.log(isLoggedIn);
 
   useEffect(() => {
+    console.log(accessToken);
+    if (isLoggedIn) {
+      navigate("/", { replace: true });
+    } else {
+      navigate("/login", { replace: true });
+    }
+  }, [isLoggedIn]);
+
+  /*   useEffect(() => {
     if (mustLogined) {
       if (accessToken) {
         axios
-          .post(
-            config.api + "/token/access",
-            {},
-            { headers: { Authorization: accessToken } }
-          )
+          .post(config.api + "/token/access", {})
           .then(({ data, headers }) => {})
           .catch((error) => {
             switch (error.toJSON().status) {
@@ -25,11 +35,13 @@ function ProtectedRoute({ element, mustLogined }) {
                 axios
                   .get(config.api + "/token/refresh")
                   .then(({ data, headers }) => {
-                    dispatch(setAccessToken({ token: headers.authorization }));
+                    localStorageService.setAccessToken(headers.authorization);
+                    //dispatch(setAccessToken({ token: headers.authorization }));
                   })
                   .catch((error) => {
                     if (error.toJSON().status === 401) {
-                      dispatch(setAccessToken({ token: null }));
+                      localStorageService.removeAccessToken();
+                      //dispatch(setAccessToken({ token: null }));
                     }
                   });
                 break;
@@ -40,12 +52,20 @@ function ProtectedRoute({ element, mustLogined }) {
           });
       }
     }
-  });
+  }); */
 
   if (mustLogined) {
-    return accessToken ? element : <Navigate to="/login" replace />;
+    return localStorageService.getAccessToken() ? (
+      element
+    ) : (
+      <Navigate to="/login" replace />
+    );
   } else {
-    return !accessToken ? element : <Navigate to="/" replace />;
+    return !localStorageService.getAccessToken() ? (
+      element
+    ) : (
+      <Navigate to="/" replace />
+    );
   }
 }
 

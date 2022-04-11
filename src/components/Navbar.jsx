@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccessToken } from "../redux/slices/userSlice";
+import localStorageService from "../services/localStorageService";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -15,7 +16,8 @@ function Navbar() {
     axios
       .get("http://localhost:3001/auth/logout")
       .then((data) => {
-        dispatch(setAccessToken({ token: null }));
+        localStorageService.removeAccessToken();
+        //dispatch(setAccessToken({ token: null }));
         navigate("/login", { replace: true });
       })
       .catch((error) => console.log(error));
