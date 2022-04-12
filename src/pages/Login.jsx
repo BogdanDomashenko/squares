@@ -21,29 +21,13 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const authServerError = useSelector(({ auth }) => auth.error);
+
   const onSubmit = async (values) => {
     dispatch(login(values));
-    /*     try {
-      const data = await authService.login(values.email, values.password);
-
-      //dispatch(setAccessToken({ token: headers.authorization }));
-      navigate("/", { replace: true });
-    } catch (error) {
-      if (error.response) {
-        switch (error.response.data.message) {
-          case "User with this email does not exist":
-            return { email: error.response.data.message };
-            break;
-          case "Incorrect password":
-            return { password: error.response.data.message };
-          default:
-            console.log(error);
-            break;
-        }
-      } else {
-        console.log(error);
-      }
-    } */
+    if (authServerError) {
+      return authServerError;
+    }
   };
 
   return (
