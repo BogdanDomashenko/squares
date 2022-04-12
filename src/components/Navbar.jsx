@@ -6,21 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccessToken } from "../redux/slices/userSlice";
 import localStorageService from "../services/localStorageService";
+import { logout } from "../redux/slices/authSlice";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const onClickLogout = () => {
-    localStorage.removeItem("userToken");
-    axios
-      .get("http://localhost:3001/auth/logout")
-      .then((data) => {
-        localStorageService.removeAccessToken();
-        //dispatch(setAccessToken({ token: null }));
-        navigate("/login", { replace: true });
-      })
-      .catch((error) => console.log(error));
+    dispatch(logout({}));
   };
 
   return (

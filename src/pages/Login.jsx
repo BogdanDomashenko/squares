@@ -3,13 +3,11 @@ import { Container, Box, TextField, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { login, setAccessToken } from "../redux/slices/userSlice";
+import { setAccessToken } from "../redux/slices/userSlice";
 import { Form, Field } from "react-final-form";
-import config from "../config";
 import validate from "../validation/validate";
 import loginSchema from "../validation/schemas/login";
-import localStorageService from "../services/localStorageService";
-import authService from "../services/authService";
+import { login } from "../redux/slices/authSlice";
 
 const FormStyle = {
   display: "flex",

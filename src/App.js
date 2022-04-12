@@ -2,10 +2,14 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Home, Booking, Login } from "./pages";
 import { Navbar, ProtectedRoute } from "./components";
+import { useSelector } from "react-redux";
 
 function App() {
+  const isLoggedIn = useSelector(({ auth }) => auth.isLoggedIn);
+
   return (
     <div className="App">
+      {isLoggedIn && <Navbar />}
       <Routes>
         <Route
           exact

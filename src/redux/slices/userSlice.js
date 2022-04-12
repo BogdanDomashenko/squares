@@ -1,14 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import authService from "../../services/authService";
+import userService from "../../services/userService";
+import { logout } from "./authSlice";
 
-export const login = createAsyncThunk(
-  "auth/login",
-  async ({ email, password }, thunkAPI) => {
+export const fetchUserData = createAsyncThunk(
+  "user/fetchUserData",
+  async ({}, thunkAPI) => {
     try {
-      const data = await authService.login(email, password);
-      return { user: data };
+      const data = await userService.getUserData();
+      return { data };
     } catch (error) {
-      return error;
+      if (error.response.status === 401) {
+        thunkAPI.dispatch(logout({}));
+      }
+      throw error;
     }
   }
 );
@@ -16,29 +20,24 @@ export const login = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    isLoggedIn: false,
     accessToken: null,
-    userName: null,
-    email: null,
-    role: null,
+    data: null,
   },
   reducers: {
     setAccessToken: (state, action) => {
       return { ...state, accessToken: action.payload.token };
     },
+    setUserData: (state, action) => {
+      state.data = action.payload.data;
+    },
   },
   extraReducers: {
-    [login.fulfilled]: (state, action) => {
-      state.isLoggedIn = true;
-      state.user = action.payload.user;
-    },
-    [login.rejected]: (state, action) => {
-      state.isLoggedIn = false;
-      state.user = null;
+    [fetchUserData.fulfilled]: (state, action) => {
+      state.data = action.payload.data;
     },
   },
 });
 
-export const { setAccessToken } = userSlice.actions;
+export const { setAccessToken, setUserData } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -11,4 +11,11 @@ const login = (email, password) => {
     });
 };
 
-export default { login };
+const logout = () => {
+  return axios.get(config.api + "/auth/logout").then((response) => {
+    localStorageService.removeAccessToken();
+    return response.data;
+  });
+};
+
+export default { login, logout };

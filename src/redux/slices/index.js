@@ -1,10 +1,11 @@
 import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
 
 import squaresReducer from "./squaresSlice";
 import userReducer from "./userSlice";
+import authReducer from "./authSlice";
 
 export default combineReducers({
   squares: squaresReducer,
+  auth: authReducer,
   user: userReducer,
 });
