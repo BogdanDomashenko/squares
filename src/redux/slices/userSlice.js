@@ -20,13 +20,9 @@ export const fetchUserData = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    accessToken: null,
     data: null,
   },
   reducers: {
-    setAccessToken: (state, action) => {
-      return { ...state, accessToken: action.payload.token };
-    },
     setUserData: (state, action) => {
       state.data = action.payload.data;
     },

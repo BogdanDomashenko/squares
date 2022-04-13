@@ -43,16 +43,13 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     isLoggedIn: false,
-    error: null,
   },
   extraReducers: {
     [login.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
-      state.error = null;
     },
     [login.rejected]: (state, action) => {
       state.isLoggedIn = false;
-      state.error = action.payload;
     },
     [logout.fulfilled]: (state, action) => {
       state.isLoggedIn = false;
@@ -62,7 +59,5 @@ export const authSlice = createSlice({
     },
   },
 });
-
-//export const { setAccessToken } = authSlice.actions;
 
 export default authSlice.reducer;

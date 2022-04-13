@@ -21,12 +21,11 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const authServerError = useSelector(({ auth }) => auth.error);
-
   const onSubmit = async (values) => {
-    dispatch(login(values));
-    if (authServerError) {
-      return authServerError;
+    try {
+      await dispatch(login(values)).unwrap();
+    } catch (error) {
+      return error;
     }
   };
 
@@ -36,16 +35,24 @@ function Login() {
         <Form
           onSubmit={onSubmit}
           validate={validate(loginSchema)}
-          render={({ handleSubmit, form, submitting, pristine, values }) => (
+          render={({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
               <Box sx={FormStyle}>
                 <Box sx={FieldStyle}>
                   <Field name="email">
                     {({ input, meta }) => (
                       <TextField
-                        error={(meta.error || meta.submitError) && meta.touched}
+                        error={
+                          (meta.error ||
+                            (meta.submitError &&
+                              !meta.modifiedSinceLastSubmit)) &&
+                          meta.touched
+                        }
                         helperText={
-                          meta.error || (meta.submitError && meta.touched)
+                          (meta.error ||
+                            (meta.submitError &&
+                              !meta.modifiedSinceLastSubmit)) &&
+                          meta.touched
                             ? meta.error || meta.submitError
                             : ""
                         }
@@ -63,9 +70,17 @@ function Login() {
                   <Field name="password">
                     {({ input, meta }) => (
                       <TextField
-                        error={(meta.error || meta.submitError) && meta.touched}
+                        error={
+                          (meta.error ||
+                            (meta.submitError &&
+                              !meta.modifiedSinceLastSubmit)) &&
+                          meta.touched
+                        }
                         helperText={
-                          meta.error || (meta.submitError && meta.touched)
+                          (meta.error ||
+                            (meta.submitError &&
+                              !meta.modifiedSinceLastSubmit)) &&
+                          meta.touched
                             ? meta.error || meta.submitError
                             : ""
                         }
