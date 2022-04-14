@@ -33,7 +33,10 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 400 && !originalRequest._retry) {
+    if (
+      (error.response.status === 400 || error.response.status === 411) &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       return api.get(`${config.api}/token/refresh`).then((res) => {
         if (res.status === 201) {
