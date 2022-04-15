@@ -1,8 +1,8 @@
 import { Container } from "@mui/material";
 import { useDispatch } from "react-redux";
 
+import { LoginFrom } from "../components";
 import { login } from "../redux/slices/authSlice";
-import LoginForm from "../components/Forms/LoginForm";
 
 function Login() {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ function Login() {
   return (
     <div>
       <Container>
-        <LoginForm onSubmit={onSubmit} />
+        <LoginFrom onSubmit={onSubmit} />
       </Container>
     </div>
   );
