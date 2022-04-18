@@ -17,6 +17,7 @@ const persistConfig = {
   key: "squares",
   version: 1,
   storage,
+  blacklist: ["modals"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

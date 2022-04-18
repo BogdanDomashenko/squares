@@ -1,9 +1,41 @@
-import React from "react";
+import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useTimer } from "use-timer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSquareStatus,
+  setSquareTimer,
+} from "../../redux/slices/squaresSlice";
+import { setModalVisible } from "../../redux/slices/modalsSlice";
 
-function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
-  const { time, start, pause, reset, status } = useTimer({
+function Square({ id, status, startTime, setBuyError }) {
+  const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  const onClick = () => {
+    if (isLoggedIn) {
+      setBuyError(null);
+      status === "green" && dispatch(setSquareStatus({ id, status: "yellow" }));
+    } else {
+      dispatch(setModalVisible({ modal: "signup", visible: true }));
+    }
+  };
+
+  const onTimerEnd = () => {
+    dispatch(setSquareStatus({ id, status: "green" }));
+  };
+
+  const onTimeUpdate = (time) => {
+    dispatch(setSquareTimer({ id, time }));
+  };
+
+  const {
+    time,
+    start,
+    pause,
+    reset,
+    status: timerStatus,
+  } = useTimer({
     initialTime: startTime || 120,
     endTime: 0,
     timerType: "DECREMENTAL",
@@ -16,8 +48,8 @@ function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
     },
   });
 
-  React.useEffect(() => {
-    switch (color) {
+  useEffect(() => {
+    switch (status) {
       case "yellow":
         start();
         break;
@@ -28,7 +60,7 @@ function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
       default:
         break;
     }
-  }, [color]);
+  }, [status]);
 
   return (
     <div>
@@ -38,7 +70,7 @@ function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
           width: 200,
           maxWidth: "100%",
           height: 200,
-          backgroundColor: color,
+          backgroundColor: status,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -47,7 +79,9 @@ function Square({ color, onClick, onTimerEnd, onTimeUpdate, startTime }) {
           },
         }}
       >
-        {status === "RUNNING" ? Math.floor(time / 60) + ":" + (time % 60) : ""}
+        {timerStatus === "RUNNING"
+          ? Math.floor(time / 60) + ":" + (time % 60)
+          : ""}
       </Box>
     </div>
   );

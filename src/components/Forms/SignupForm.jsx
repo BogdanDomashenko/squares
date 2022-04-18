@@ -1,8 +1,10 @@
-import { Container, Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField, Button, Link } from "@mui/material";
 
 import { Form, Field } from "react-final-form";
+import { useDispatch } from "react-redux";
+import { setModalVisible } from "../../redux/slices/modalsSlice";
+import signupSchema from "../../utils/helpers/validation/signupSchema";
 import validate from "../../utils/helpers/validation/validate";
-import loginSchema from "../../utils/helpers/validation/loginSchema";
 
 const FormStyle = {
   display: "flex",
@@ -20,11 +22,27 @@ const buttonsStyle = {
   },
 };
 
-function LoginForm({ onSubmit, onClickCancelButton }) {
+const bottomFormPanel = {
+  display: "flex",
+  justifyContent: "space-between",
+};
+
+const linkStyle = {
+  cursor: "pointer",
+};
+
+function SignupForm({ onSubmit, onClickCancelButton }) {
+  const dispatch = useDispatch();
+
+  const handleRegisteredClick = () => {
+    dispatch(setModalVisible({ modal: "signup", visible: false }));
+    dispatch(setModalVisible({ modal: "login", visible: true }));
+  };
+
   return (
     <Form
       onSubmit={onSubmit}
-      validate={validate(loginSchema)}
+      validate={validate(signupSchema)}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <Box sx={FormStyle}>
@@ -54,44 +72,23 @@ function LoginForm({ onSubmit, onClickCancelButton }) {
                 )}
               </Field>
             </Box>
-            <Box sx={FieldStyle}>
-              <Field name="password">
-                {({ input, meta }) => (
-                  <TextField
-                    error={
-                      (meta.error ||
-                        (meta.submitError && !meta.modifiedSinceLastSubmit)) &&
-                      meta.touched
-                    }
-                    helperText={
-                      (meta.error ||
-                        (meta.submitError && !meta.modifiedSinceLastSubmit)) &&
-                      meta.touched
-                        ? meta.error || meta.submitError
-                        : ""
-                    }
-                    id="userPassword"
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    {...input}
-                    fullWidth
-                  />
-                )}
-              </Field>
-            </Box>
           </Box>
-          <Box sx={buttonsStyle}>
-            {onClickCancelButton ? (
-              <Button variant="outlined" onClick={onClickCancelButton}>
-                Cancel
+          <Box sx={bottomFormPanel}>
+            <Link sx={linkStyle} onClick={handleRegisteredClick}>
+              Already registered?
+            </Link>
+            <Box sx={buttonsStyle}>
+              {onClickCancelButton ? (
+                <Button variant="outlined" onClick={onClickCancelButton}>
+                  Cancel
+                </Button>
+              ) : (
+                ""
+              )}
+              <Button type="submit" variant="outlined">
+                Sign Up
               </Button>
-            ) : (
-              ""
-            )}
-            <Button type="submit" variant="outlined">
-              Login
-            </Button>
+            </Box>
           </Box>
         </form>
       )}
@@ -99,4 +96,4 @@ function LoginForm({ onSubmit, onClickCancelButton }) {
   );
 }
 
-export default LoginForm;
+export default SignupForm;

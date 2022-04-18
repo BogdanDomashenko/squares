@@ -17,6 +17,10 @@ function Squares() {
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [buyError, setBuyError] = React.useState(null);
 
+  const squares = useSelector((state) => {
+    return state.squares;
+  });
+
   React.useEffect(() => {
     if (squares.find((item) => item.status === "yellow")) {
       setButtonVisible(true);
@@ -24,23 +28,6 @@ function Squares() {
       setButtonVisible(false);
     }
   });
-
-  const squares = useSelector((state) => {
-    return state.squares;
-  });
-
-  const onSquareClick = (id, status) => {
-    setBuyError(null);
-    status === "green" && dispatch(setStatus({ id, status: "yellow" }));
-  };
-
-  const onSquareTimerEnd = (id) => {
-    dispatch(setStatus({ id, status: "green" }));
-  };
-
-  const onSquareTimeUpdate = (id, time) => {
-    dispatch(setSquareTimer({ id, time }));
-  };
 
   const buyButtonClick = () => {
     const promise = new Promise((resolve, reject) =>
@@ -71,11 +58,10 @@ function Squares() {
             squares.map((item, key) => (
               <Grid item xs={4} key={key}>
                 <Square
-                  color={item.status}
-                  onClick={() => onSquareClick(item.id, item.status)}
-                  onTimerEnd={() => onSquareTimerEnd(item.id)}
-                  onTimeUpdate={(time) => onSquareTimeUpdate(item.id, time)}
+                  id={item.id}
+                  status={item.status}
                   startTime={item.timer}
+                  setBuyError={setBuyError}
                 />
               </Grid>
             ))}

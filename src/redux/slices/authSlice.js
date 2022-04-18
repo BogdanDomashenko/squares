@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import authService from "../../services/authService";
 import { resetSquares } from "./squaresSlice";
-import { setUserData } from "./userSlice";
+import { resetUserData, setUserData } from "./userSlice";
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async ({}, thunkAPI) => {
   try {
     const data = await authService.logout();
-    thunkAPI.dispatch(setUserData({ data: null }));
+    thunkAPI.dispatch(resetUserData({}));
     thunkAPI.dispatch(resetSquares({}));
   } catch (error) {
     throw error;
@@ -53,9 +53,6 @@ export const authSlice = createSlice({
     },
     [logout.fulfilled]: (state, action) => {
       state.isLoggedIn = false;
-    },
-    [logout.rejected]: (state, action) => {
-      state.isLoggedIn = true;
     },
   },
 });
