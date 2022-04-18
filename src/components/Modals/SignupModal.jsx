@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
 import { setModalVisible } from "../../redux/slices/modalsSlice";
 import SignupForm from "../Forms/SignupForm";
+import SignupResultForm from "../Forms/SignupResultForm";
 
 const style = {
   position: "absolute",
@@ -19,10 +20,11 @@ const style = {
   p: 4,
 };
 
-function LoginModal() {
+function SignupModal() {
   const dispatch = useDispatch();
 
   const { visible } = useSelector((state) => state.modals.signup);
+  const [resultFormVisible, setResultFormVisible] = useState(false);
 
   const hideModal = () => {
     dispatch(setModalVisible({ modal: "signup", visible: false }));
@@ -32,6 +34,7 @@ function LoginModal() {
     try {
       await dispatch(login(values)).unwrap();
       hideModal();
+      setResultFormVisible(true);
     } catch (error) {
       return error;
     }
@@ -45,13 +48,19 @@ function LoginModal() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Enter your email
-        </Typography>
-        <SignupForm onSubmit={onSubmit} onClickCancelButton={hideModal} />
+        {!resultFormVisible ? (
+          <div>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Enter your email
+            </Typography>
+            <SignupForm onSubmit={onSubmit} onClickCancelButton={hideModal} />
+          </div>
+        ) : (
+          <SignupResultForm username="jemej" password="ds909m9" />
+        )}
       </Box>
     </Modal>
   );
 }
 
-export default LoginModal;
+export default SignupModal;

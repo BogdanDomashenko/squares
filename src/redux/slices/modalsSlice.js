@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   login: { visible: false },
   signup: { visible: false },
+  signupResult: { visible: false },
 };
 
 export const modalsSlice = createSlice({
