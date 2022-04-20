@@ -1,13 +1,36 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import authService from "../../services/authService";
+import AuthService from "../../services/AuthService";
 import { resetSquares } from "./squaresSlice";
 import { resetUserData, setUserData } from "./userSlice";
+
+export const signup = createAsyncThunk(
+  "auth/signup",
+  async ({ email }, thunkAPI) => {
+    try {
+      const data = await AuthService.signup(email);
+      thunkAPI.dispatch(setUserData({ data }));
+      return data;
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.data.message) {
+          case "This email is already registered":
+            throw thunkAPI.rejectWithValue({
+              email: error.response.data.message,
+            });
+          default:
+            break;
+        }
+        throw error;
+      }
+    }
+  }
+);
 
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, thunkAPI) => {
     try {
-      const data = await authService.login(email, password);
+      const data = await AuthService.login(email, password);
       thunkAPI.dispatch(setUserData({ data }));
     } catch (error) {
       if (error.response) {
@@ -31,7 +54,7 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async ({}, thunkAPI) => {
   try {
-    const data = await authService.logout();
+    const data = await AuthService.logout();
     thunkAPI.dispatch(resetUserData({}));
     thunkAPI.dispatch(resetSquares({}));
   } catch (error) {
@@ -45,6 +68,12 @@ export const authSlice = createSlice({
     isLoggedIn: false,
   },
   extraReducers: {
+    [signup.fulfilled]: (state, action) => {
+      state.isLoggedIn = true;
+    },
+    [signup.rejected]: (state, action) => {
+      state.isLoggedIn = false;
+    },
     [login.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
     },

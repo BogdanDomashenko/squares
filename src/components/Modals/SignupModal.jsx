@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Box, Typography } from "@mui/material";
 
 import LoginForm from "../Forms/LoginForm";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/slices/authSlice";
+import { login, signup } from "../../redux/slices/authSlice";
 import { setModalVisible } from "../../redux/slices/modalsSlice";
 import SignupForm from "../Forms/SignupForm";
 import SignupResultForm from "../Forms/SignupResultForm";
@@ -26,14 +26,22 @@ function SignupModal() {
   const { visible } = useSelector((state) => state.modals.signup);
   const [resultFormVisible, setResultFormVisible] = useState(false);
 
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  useEffect(() => {
+    if (resultFormVisible) setResultFormVisible(false);
+  }, [visible]);
+
   const hideModal = () => {
     dispatch(setModalVisible({ modal: "signup", visible: false }));
   };
 
   const onSubmit = async (values) => {
     try {
-      await dispatch(login(values)).unwrap();
-      hideModal();
+      const data = await dispatch(signup(values)).unwrap();
+      setUsername(data.username);
+      setPassword(data.password);
       setResultFormVisible(true);
     } catch (error) {
       return error;
@@ -56,7 +64,7 @@ function SignupModal() {
             <SignupForm onSubmit={onSubmit} onClickCancelButton={hideModal} />
           </div>
         ) : (
-          <SignupResultForm username="jemej" password="ds909m9" />
+          <SignupResultForm username={username} password={password} />
         )}
       </Box>
     </Modal>

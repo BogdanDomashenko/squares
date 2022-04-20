@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import userService from "../../services/userService";
+import UserService from "../../services/UserService";
 import ROLES from "../../utils/constants/userRoleConstants";
 import { logout } from "./authSlice";
 
@@ -7,7 +7,7 @@ export const fetchUserData = createAsyncThunk(
   "user/fetchUserData",
   async ({}, thunkAPI) => {
     try {
-      const data = await userService.getUserData();
+      const data = await UserService.getUserData();
       return { data };
     } catch (error) {
       if (error.response.status === 401) {
@@ -22,7 +22,7 @@ const initialState = {
   data: {
     username: null,
     email: null,
-    role: ROLES.fantom,
+    role: ROLES.phanom,
   },
 };
 

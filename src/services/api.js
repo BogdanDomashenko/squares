@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config";
-import localStorageService from "./localStorageService";
+import LocalStorageService from "./LocalStorageService";
 
 const api = axios.create({
   baseURL: config.api,
@@ -9,7 +9,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorageService.getAccessToken();
+    const accessToken = LocalStorageService.getAccessToken();
     if (accessToken) {
       config.headers["Authorization"] = accessToken;
     }
@@ -29,7 +29,7 @@ api.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url === `${config.api}/token/refresh`
     ) {
-      localStorageService.removeAccessToken();
+      LocalStorageService.removeAccessToken();
       return Promise.reject(error);
     }
 
@@ -40,9 +40,9 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       return api.get(`${config.api}/token/refresh`).then((res) => {
         if (res.status === 201) {
-          localStorageService.setAccessToken(res.headers.authorization);
+          LocalStorageService.setAccessToken(res.headers.authorization);
           api.defaults.headers.common["Authorization"] =
-            localStorageService.getAccessToken();
+            LocalStorageService.getAccessToken();
           return api(originalRequest);
         }
       });
