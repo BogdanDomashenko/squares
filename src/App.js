@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { Home, Booking, Login, Admin } from "./pages";
 import { LoginModal, Navbar, ProtectedRoute, SignupModal } from "./components";
 import { useSelector } from "react-redux";
-import ROLES from "./utils/constants/userRoleConstants";
+import { ROLES } from "./utils/constants";
 
 function App() {
   return (

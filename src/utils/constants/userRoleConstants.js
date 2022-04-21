@@ -1,5 +1,5 @@
 const ROLES = {
-  phanom: "phanom",
+  phantom: "phantom",
   user: "user",
   admin: "admin",
 };

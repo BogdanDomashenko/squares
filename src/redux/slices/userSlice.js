@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import UserService from "../../services/UserService";
-import ROLES from "../../utils/constants/userRoleConstants";
+import { ROLES } from "../../utils/constants";
 import { logout } from "./authSlice";
 
 export const fetchUserData = createAsyncThunk(
@@ -20,9 +20,10 @@ export const fetchUserData = createAsyncThunk(
 
 const initialState = {
   data: {
+    id: null,
     username: null,
     email: null,
-    role: ROLES.phanom,
+    role: ROLES.phantom,
   },
 };
 

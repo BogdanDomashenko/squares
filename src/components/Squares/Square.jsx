@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTimer } from "use-timer";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,22 +7,33 @@ import {
   setSquareTimer,
 } from "../../redux/slices/squaresSlice";
 import { setModalVisible } from "../../redux/slices/modalsSlice";
+import { ROLES, SQUARE_STATUS } from "../../utils/constants";
 
-function Square({ id, status, startTime, setBuyError }) {
+function Square({ id, status, userId, startTime, setBuyError }) {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const { role: userRole, id: currentUserId } = useSelector(
+    (state) => state.user.data
+  );
 
   const onClick = () => {
     if (isLoggedIn) {
       setBuyError(null);
-      status === "green" && dispatch(setSquareStatus({ id, status: "yellow" }));
+      status === SQUARE_STATUS.default &&
+        dispatch(
+          setSquareStatus({
+            id,
+            status: SQUARE_STATUS.booked,
+            userId: currentUserId,
+          })
+        );
     } else {
       dispatch(setModalVisible({ modal: "signup", visible: true }));
     }
   };
 
   const onTimerEnd = () => {
-    dispatch(setSquareStatus({ id, status: "green" }));
+    dispatch(setSquareStatus({ id, status: SQUARE_STATUS.default }));
   };
 
   const onTimeUpdate = (time) => {
@@ -50,11 +61,11 @@ function Square({ id, status, startTime, setBuyError }) {
 
   useEffect(() => {
     switch (status) {
-      case "yellow":
+      case SQUARE_STATUS.booked:
         start();
         break;
-      case "green":
-      case "red":
+      case SQUARE_STATUS.default:
+      case SQUARE_STATUS.sold:
         reset();
         break;
       default:
@@ -72,6 +83,7 @@ function Square({ id, status, startTime, setBuyError }) {
           height: 200,
           backgroundColor: status,
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           "&:hover": {
@@ -82,7 +94,13 @@ function Square({ id, status, startTime, setBuyError }) {
         {timerStatus === "RUNNING"
           ? Math.floor(time / 60) + ":" + (time % 60)
           : ""}
+        {userId && userId === currentUserId ? (
+          <Typography type="p">Your square</Typography>
+        ) : (
+          ""
+        )}
       </Box>
+      {userRole === ROLES.admin && userId ? userId : ""}
     </div>
   );
 }

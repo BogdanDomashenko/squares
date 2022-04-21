@@ -6,23 +6,30 @@ import {
   setYellowSquaresStatus,
   buy,
   setSquareTimer,
+  resetBookedSquaresByUserId,
 } from "../../redux/slices/squaresSlice";
 
 import Square from "./Square";
 import { Container, Grid, Button } from "@mui/material";
+import { SQUARE_STATUS } from "../../utils/constants";
 
 function Squares() {
   const dispatch = useDispatch();
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [buyError, setBuyError] = React.useState(null);
+  const { id: userId } = useSelector((state) => state.user.data);
 
   const squares = useSelector((state) => {
     return state.squares;
   });
 
   React.useEffect(() => {
-    if (squares.find((item) => item.status === "yellow")) {
+    if (
+      squares.find(
+        (item) => item.status === SQUARE_STATUS.booked && item.userId === userId
+      )
+    ) {
       setButtonVisible(true);
     } else {
       setButtonVisible(false);
@@ -42,10 +49,10 @@ function Squares() {
 
     promise
       .then(() => {
-        dispatch(buy({}));
+        dispatch(buy({ userId }));
       })
       .catch((error) => {
-        dispatch(setYellowSquaresStatus({ status: "green" }));
+        dispatch(resetBookedSquaresByUserId({ userId }));
         setBuyError(error);
       });
   };
@@ -60,6 +67,7 @@ function Squares() {
                 <Square
                   id={item.id}
                   status={item.status}
+                  userId={item.userId}
                   startTime={item.timer}
                   setBuyError={setBuyError}
                 />

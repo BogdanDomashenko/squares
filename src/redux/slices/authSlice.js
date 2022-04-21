@@ -8,7 +8,8 @@ export const signup = createAsyncThunk(
   async ({ email }, thunkAPI) => {
     try {
       const data = await AuthService.signup(email);
-      thunkAPI.dispatch(setUserData({ data }));
+      const { id, username, role } = data;
+      thunkAPI.dispatch(setUserData({ data: { id, email, username, role } }));
       return data;
     } catch (error) {
       if (error.response) {
@@ -56,7 +57,7 @@ export const logout = createAsyncThunk("auth/logout", async ({}, thunkAPI) => {
   try {
     const data = await AuthService.logout();
     thunkAPI.dispatch(resetUserData({}));
-    thunkAPI.dispatch(resetSquares({}));
+    //thunkAPI.dispatch(resetSquares({}));
   } catch (error) {
     throw error;
   }

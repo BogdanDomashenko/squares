@@ -3,7 +3,6 @@ import config from "../config";
 import LocalStorageService from "./LocalStorageService";
 
 const signup = (email) => {
-  console.log("signup");
   return axios.post(config.api + "/auth/signup", { email }).then((response) => {
     LocalStorageService.setAccessToken(response.headers.authorization);
     return response.data;
