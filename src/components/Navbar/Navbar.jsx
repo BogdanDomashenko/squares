@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { setModalVisible } from "../../redux/slices/modalsSlice";
+import { ROLES } from "../../utils/constants";
 
 const buttonsWrapperStyle = {
   "& :not(:last-child)": {
@@ -13,6 +14,7 @@ const buttonsWrapperStyle = {
 
 function Navbar() {
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const { role } = useSelector((state) => state.user.data);
   const dispatch = useDispatch();
 
   const onClickLogout = () => {
@@ -38,6 +40,13 @@ function Navbar() {
             <Link to="/booking">
               <Button>Booking</Button>
             </Link>
+            {role === ROLES.admin ? (
+              <Link to="admin">
+                <Button>Admin</Button>
+              </Link>
+            ) : (
+              ""
+            )}
           </div>
           <div>
             {isLoggedIn ? (

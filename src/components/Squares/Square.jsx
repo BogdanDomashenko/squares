@@ -12,9 +12,7 @@ import { ROLES, SQUARE_STATUS } from "../../utils/constants";
 function Square({ id, status, userId, startTime, setBuyError }) {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { role: userRole, id: currentUserId } = useSelector(
-    (state) => state.user.data
-  );
+  const { id: currentUserId } = useSelector((state) => state.user.data);
 
   const onClick = () => {
     if (isLoggedIn) {
@@ -100,7 +98,6 @@ function Square({ id, status, userId, startTime, setBuyError }) {
           ""
         )}
       </Box>
-      {userRole === ROLES.admin && userId ? userId : ""}
     </div>
   );
 }
