@@ -17,11 +17,11 @@ function Square({ id, status, userId, startTime, setBuyError }) {
   const onClick = () => {
     if (isLoggedIn) {
       setBuyError(null);
-      status === SQUARE_STATUS.default &&
+      status === SQUARE_STATUS.default.name &&
         dispatch(
           setSquareStatus({
             id,
-            status: SQUARE_STATUS.booked,
+            status: SQUARE_STATUS.booked.name,
             userId: currentUserId,
           })
         );
@@ -59,11 +59,11 @@ function Square({ id, status, userId, startTime, setBuyError }) {
 
   useEffect(() => {
     switch (status) {
-      case SQUARE_STATUS.booked:
+      case SQUARE_STATUS.booked.name:
         start();
         break;
-      case SQUARE_STATUS.default:
-      case SQUARE_STATUS.sold:
+      case SQUARE_STATUS.default.name:
+      case SQUARE_STATUS.sold.name:
         reset();
         break;
       default:
@@ -79,7 +79,7 @@ function Square({ id, status, userId, startTime, setBuyError }) {
           width: 200,
           maxWidth: "100%",
           height: 200,
-          backgroundColor: status,
+          backgroundColor: SQUARE_STATUS[status].color,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

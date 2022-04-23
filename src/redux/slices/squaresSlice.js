@@ -2,15 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import { SQUARE_STATUS } from "../../utils/constants";
 
 const initialState = [
-  { id: 1, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 2, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 3, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 4, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 5, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 6, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 7, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 8, status: SQUARE_STATUS.default, timer: null, userId: null },
-  { id: 9, status: SQUARE_STATUS.default, timer: null, userId: null },
+  { id: 1, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 2, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 3, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 4, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 5, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 6, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 7, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 8, status: SQUARE_STATUS.default.name, timer: null, userId: null },
+  { id: 9, status: SQUARE_STATUS.default.name, timer: null, userId: null },
 ];
 
 export const squaresSlice = createSlice({
@@ -37,9 +37,9 @@ export const squaresSlice = createSlice({
     },
     buy: (state, action) => {
       return state.map((item) =>
-        item.status === SQUARE_STATUS.booked &&
+        item.status === SQUARE_STATUS.booked.name &&
         action.payload.userId === item.userId
-          ? { ...item, status: SQUARE_STATUS.sold }
+          ? { ...item, status: SQUARE_STATUS.sold.name }
           : item
       );
     },
@@ -53,11 +53,11 @@ export const squaresSlice = createSlice({
     resetSquares: (state, action) => initialState,
     resetBookedSquaresByUserId: (state, action) => {
       return state.map((item) =>
-        item.status === SQUARE_STATUS.booked &&
+        item.status === SQUARE_STATUS.booked.name &&
         item.userId === action.payload.userId
           ? {
               ...item,
-              status: SQUARE_STATUS.default,
+              status: SQUARE_STATUS.default.name,
               timer: null,
               userId: null,
             }

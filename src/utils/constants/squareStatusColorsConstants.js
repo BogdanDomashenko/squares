@@ -1,7 +1,16 @@
 const SQUARE_STATUS = {
-  default: "green",
-  booked: "yellow",
-  sold: "red",
+  default: {
+    name: "default",
+    color: "green",
+  },
+  booked: {
+    name: "booked",
+    color: "yellow",
+  },
+  sold: {
+    name: "sold",
+    color: "red",
+  },
 };
 
 export default SQUARE_STATUS;

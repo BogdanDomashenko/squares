@@ -27,7 +27,8 @@ function Squares() {
   React.useEffect(() => {
     if (
       squares.find(
-        (item) => item.status === SQUARE_STATUS.booked && item.userId === userId
+        (item) =>
+          item.status === SQUARE_STATUS.booked.name && item.userId === userId
       )
     ) {
       setButtonVisible(true);

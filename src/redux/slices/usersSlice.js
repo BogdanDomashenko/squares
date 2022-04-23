@@ -9,8 +9,6 @@ export const fetchUsersWhoBooked = createAsyncThunk(
   async ({ ids }, thunkAPI) => {
     try {
       const whoBooked = await UsersService.listByIds(ids);
-      /*       const whoBokedObj = {};
-      whoBooked.forEach(user => whoBokedObj[user.]) */
       return { whoBooked };
     } catch (error) {
       if (error.response.status === 401) {
